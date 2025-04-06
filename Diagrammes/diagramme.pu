@@ -1,0 +1,30 @@
+@startuml
+actor Client
+participant "Application Glovo" as App
+participant "Serveur Glovo" as Server
+participant "Restaurant" as Resto
+participant "Livreur" as Livreur
+database "Base de données" as DB
+
+Client -> App : Ouvre l'application
+Client -> App : Recherche un restaurant/plat
+App -> Server : Requête de recherche
+Server -> DB : Rechercher restaurants/plats
+DB --> Server : Résultats
+Server --> App : Résultats restaurants/plats
+App --> Client : Affiche les résultats
+
+Client -> App : Sélectionne un plat\net ajoute au panier
+Client -> App : Passe la commande
+App -> Server : Détails de commande
+
+Server -> Resto : Transmet la commande
+Resto -> Server : Confirmation réception
+
+Server -> Livreur : Notifie les livreurs disponibles
+Livreur -> Server : Accepte la livraison
+
+Server --> App : Commande confirmée\n+ info livreur
+App --> Client : Affiche suivi commande
+
+@enduml
