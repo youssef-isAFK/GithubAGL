@@ -1,30 +1,72 @@
 @startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FDF6E3
+  BorderColor black
+  ArrowColor black
+  ActorBorderColor black
+  ActorFontColor black
+}
+
 actor Client
-participant "Application Glovo" as App
-participant "Serveur Glovo" as Server
-participant "Restaurant" as Resto
-participant "Livreur" as Livreur
-database "Base de données" as DB
+actor Livreur
+actor Restaurant
+actor Admin
 
-Client -> App : Ouvre l'application
-Client -> App : Recherche un restaurant/plat
-App -> Server : Requête de recherche
-Server -> DB : Rechercher restaurants/plats
-DB --> Server : Résultats
-Server --> App : Résultats restaurants/plats
-App --> Client : Affiche les résultats
+rectangle "Application Glovo" {
 
-Client -> App : Sélectionne un plat\net ajoute au panier
-Client -> App : Passe la commande
-App -> Server : Détails de commande
+  usecase "S'inscrire / Se connecter" as UC1
+  usecase "Rechercher restaurant / plat" as UC2
+  usecase "Consulter menu restaurant" as UC2b
+  usecase "Ajouter au panier" as UC2c
+  usecase "Passer une commande" as UC3
+  usecase "Payer la commande" as UC3b
+  usecase "Suivre la commande" as UC4
+  usecase "Géolocaliser le livreur" as UC4b
+  usecase "Noter le service" as UC4c
 
-Server -> Resto : Transmet la commande
-Resto -> Server : Confirmation réception
+  usecase "Recevoir la commande" as UC5
+  usecase "Préparer la commande" as UC5b
 
-Server -> Livreur : Notifie les livreurs disponibles
-Livreur -> Server : Accepte la livraison
+  usecase "Accepter une livraison" as UC6
+  usecase "Livrer la commande" as UC6b
+  usecase "Mettre à jour la position" as UC6c
 
-Server --> App : Commande confirmée\n+ info livreur
-App --> Client : Affiche suivi commande
+  usecase "Gérer utilisateurs" as Admin1
+  usecase "Gérer restaurants" as Admin2
+}
+
+' Liens pour le client
+Client --> UC1
+Client --> UC2
+Client --> UC2b
+Client --> UC2c
+Client --> UC3
+Client --> UC4
+Client --> UC4c
+
+UC3 --> UC3b : <<include>>
+UC4 --> UC4b : <<include>>
+
+' Liens restaurant
+Restaurant --> UC5
+Restaurant --> UC5b
+
+UC3 --> UC5 : <<include>>
+UC5 --> UC5b : <<include>>
+
+' Liens livreur
+Livreur --> UC6
+Livreur --> UC6b
+Livreur --> UC6c
+
+UC5 --> UC6 : <<include>>
+UC6 --> UC6b : <<include>>
+UC6b --> UC6c : <<include>>
+
+' Admin
+Admin --> Admin1
+Admin --> Admin2
 
 @enduml
